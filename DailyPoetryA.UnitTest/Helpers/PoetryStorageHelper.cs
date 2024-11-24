@@ -7,7 +7,7 @@ public static class PoetryStorageHelper
 {
     public static void RemoveDatabaseFile() => File.Delete(PoetryStorage.PoetryDbPath);
 
-    public static async Task<PoetryStorage> GetInitializedPoetryStorage()
+    public static async Task<PoetryStorage> GetInitializedPoetryStorageAsync()
     {
         var preferenceStorageMock = new Mock<IPreferenceStorage>();
         preferenceStorageMock.Setup(p => p.Get(PoetryStorageConstant.VersionKey, -1)).Returns(-1);

@@ -7,9 +7,9 @@ namespace DailyPoetryA.Library.Services;
 
 public class PoetryStorage(IPreferenceStorage preferenceStorage) : IPoetryStorage
 {
-    private const int NumberPoetry = 30;
+    public const int NumberPoetry = 30;
 
-    private const string DbName = "poetrydb.sqlite3";
+    public const string DbName = "poetrydb.sqlite3";
 
     public static readonly string PoetryDbPath = PathHelper.GetLocalFilePath(DbName);
 
@@ -32,10 +32,10 @@ public class PoetryStorage(IPreferenceStorage preferenceStorage) : IPoetryStorag
         => await Connection.Table<Poetry>().FirstOrDefaultAsync(p => p.Id == id);
 
 
-    public Task<IList<Poetry>> GetPoetriesAsync(Expression<Func<Poetry, bool>> where, int skip, int take)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IList<Poetry>> GetPoetriesAsync(Expression<Func<Poetry, bool>> where, int skip, int take)
+        => await Connection.Table<Poetry>().Where(where).Skip(skip).Take(take).ToListAsync();
+
+    public async Task CloseAsync() => await Connection.CloseAsync();
 }
 
 public static class PoetryStorageConstant

@@ -1,4 +1,6 @@
-﻿using DailyPoetryA.Library.Services;
+﻿using System.Linq.Expressions;
+using DailyPoetryA.Library.Models;
+using DailyPoetryA.Library.Services;
 using DailyPoetryA.UnitTest.Helpers;
 using Moq;
 
@@ -42,7 +44,30 @@ public class PoetryStorageTest : IDisposable
         await poetryStorage.InitializeAsync();
         Assert.True(File.Exists(PoetryStorage.PoetryDbPath));
     }
-    
+
+    [Fact]
+    public async Task GetPoetryAsync_Default()
+    {
+        var poetryStorage = await PoetryStorageHelper.GetInitializedPoetryStorageAsync();
+        var poetry = await poetryStorage.GetPoetryAsync(10001);
+        Assert.Equal("临江仙 · 夜归临皋", poetry.Name);
+        await poetryStorage.CloseAsync();
+    }
+
+    [Fact]
+    public async Task GetPoetriesAsync_Default()
+    {
+        var poetryStorage = await PoetryStorageHelper.GetInitializedPoetryStorageAsync();
+        var poetries =
+            await poetryStorage.GetPoetriesAsync(
+                Expression.Lambda<Func<Poetry, bool>>(Expression.Constant(true),
+                    Expression.Parameter(typeof(Poetry), "p")),
+                0,
+                int.MaxValue);
+        Assert.Equal(PoetryStorage.NumberPoetry, poetries.Count);
+        await poetryStorage.CloseAsync();
+    }
+
     public void Dispose()
     {
         PoetryStorageHelper.RemoveDatabaseFile();
