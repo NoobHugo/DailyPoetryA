@@ -13,4 +13,6 @@ public interface IPoetryStorage
 
     Task<IList<Poetry>> GetPoetriesAsync(
         Expression<Func<Poetry, bool>> where, int skip, int take);
+    
+    Task CloseAsync();
 }
